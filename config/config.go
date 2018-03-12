@@ -21,6 +21,9 @@ type Config struct {
 	Exclude         string        `config:"file_exclude"`
 
 	// TODO add the ability to treat .gz files as gzipped streams
+
+	// TODO add a flag to read stackdriver logs (JSON files with lists of event objects)
+	// https://cloud.google.com/logging/docs/export/using_exported_logs
 }
 
 var DefaultConfig = Config{
