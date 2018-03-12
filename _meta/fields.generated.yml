@@ -1,0 +1,20 @@
+- key: gcsbeat
+  title: gcsbeat
+  description:
+  fields:
+    - name: event
+      type: string
+      required: true
+      description: >
+        The raw line of the log file.
+    - name: file
+      type: string
+      required: true
+      description: >
+        The name of the bucket object this line came from.
+    - name: line
+      type: int
+      required: true
+      description: >
+        The line number of the bucket object this line was found on. Lines start at one (not zero)
+

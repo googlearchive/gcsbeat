@@ -1,0 +1,5 @@
+= GCSBeat Docs
+
+Welcome to the GCSBeat documentation.
+
+

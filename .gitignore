@@ -1,0 +1,12 @@
+/.idea
+/build
+/logs
+
+.DS_Store
+/gcsbeat
+/gcsbeat.test
+*.pyc
+*.swp
+
+vendor/
+*~
