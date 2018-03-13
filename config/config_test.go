@@ -35,6 +35,7 @@ func TestGetAndValidateConfigInvalidConfigurations(t *testing.T) {
 		Delete          bool
 		Match           string
 		Exclude         string
+		MetadataKey     string
 	}{
 		"zero interval": {
 			Interval:        0,
@@ -42,6 +43,7 @@ func TestGetAndValidateConfigInvalidConfigurations(t *testing.T) {
 			Delete:          true,
 			Match:           "*",
 			Exclude:         "",
+			MetadataKey:     "x-goog-meta-gcsbeat",
 		},
 		"negative interval": {
 			Interval:        0,
@@ -49,6 +51,7 @@ func TestGetAndValidateConfigInvalidConfigurations(t *testing.T) {
 			Delete:          true,
 			Match:           "*",
 			Exclude:         "",
+			MetadataKey:     "x-goog-meta-gcsbeat",
 		},
 		"missing bucket id": {
 			Interval:        1,
@@ -56,6 +59,7 @@ func TestGetAndValidateConfigInvalidConfigurations(t *testing.T) {
 			Delete:          true,
 			Match:           "*",
 			Exclude:         "",
+			MetadataKey:     "x-goog-meta-gcsbeat",
 		},
 		"bad match glob": {
 			Interval:        1,
@@ -63,6 +67,7 @@ func TestGetAndValidateConfigInvalidConfigurations(t *testing.T) {
 			Delete:          false,
 			Match:           `[a-z`,
 			Exclude:         "",
+			MetadataKey:     "x-goog-meta-gcsbeat",
 
 		},
 		"bad exclude glob": {
@@ -71,7 +76,23 @@ func TestGetAndValidateConfigInvalidConfigurations(t *testing.T) {
 			Delete:          false,
 			Match:           "",
 			Exclude:         `[a-z`,
-
+			MetadataKey:     "x-goog-meta-gcsbeat",
+		},
+		"whitespace only metadata key": {
+			Interval:        1,
+			BucketId:        "a",
+			Delete:          false,
+			Match:           "",
+			Exclude:         `[a-z`,
+			MetadataKey:     "\r\n\t ",
+		},
+		"empty metadata key": {
+			Interval:        1,
+			BucketId:        "a",
+			Delete:          false,
+			Match:           "",
+			Exclude:         `[a-z`,
+			MetadataKey:     "",
 		},
 	}
 
@@ -82,6 +103,7 @@ func TestGetAndValidateConfigInvalidConfigurations(t *testing.T) {
 		c.SetBool("delete", -1, tc.Delete)
 		c.SetString("file_matches", -1, tc.Match)
 		c.SetString("file_exclude", -1, tc.Exclude)
+		c.SetString("metadata_key", -1, tc.MetadataKey)
 
 		_, err := GetAndValidateConfig(c)
 
@@ -98,6 +120,7 @@ func TestGetAndValidateConfigValidConfiguration(t *testing.T) {
 	c.SetBool("delete", -1, false)
 	c.SetString("matches", -1, "*.log*")
 	c.SetString("exclude", -1, "bak_*")
+	c.SetString("metadata_key", -1, "x-goog-meta-gcsbeat")
 
 	_, err := GetAndValidateConfig(c)
 

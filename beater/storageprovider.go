@@ -14,9 +14,6 @@ import (
 )
 
 const (
-	// TODO allow the metadata key to be user-defined so multiple beats/jobs can operate
-	// on it simultaneously
-	ProcessedMetadataKey   = "x-goog-meta-gcsbeat"
 	ProcessedMetadataValue = "processed"
 )
 
@@ -119,9 +116,9 @@ func (asp *aferoStorageProvider) ListUnprocessed() ([]string, error) {
 
 	var out []string
 	for _, f := range files {
-		
+
 		wasProcessed, _ := asp.WasProcessed(f.Name())
-		if ! wasProcessed {
+		if !wasProcessed {
 			out = append(out, f.Name())
 		}
 	}
@@ -163,7 +160,15 @@ func newGcpStorageProvider(cfg *config.Config) (StorageProvider, error) {
 		return nil, err
 	}
 
-	return &gcpStorageProvider{ctx, client, bucket, make(map[string]bool)}, err
+	// TODO make sure we have appropriate permissions on the bucket
+
+	return &gcpStorageProvider{
+		ctx:            ctx,
+		storageClient:  client,
+		bucket:         bucket,
+		processedCache: make(map[string]bool),
+		metadataKey:    cfg.MetadataKey,
+	}, err
 }
 
 type gcpStorageProvider struct {
@@ -171,6 +176,7 @@ type gcpStorageProvider struct {
 	storageClient  *storage.Client
 	bucket         string
 	processedCache map[string]bool
+	metadataKey    string
 }
 
 func (gsp *gcpStorageProvider) getBucket() *storage.BucketHandle {
@@ -193,12 +199,12 @@ func (gsp *gcpStorageProvider) Remove(path string) error {
 	return gsp.getObject(path).Delete(gsp.ctx)
 }
 
-func isMarkedAsProcessed(metadata map[string]string) bool {
+func isMarkedAsProcessed(metadata map[string]string, metadataKey string) bool {
 	if metadata == nil {
 		return false
 	}
 
-	value, ok := metadata[ProcessedMetadataKey]
+	value, ok := metadata[metadataKey]
 
 	return ok && value == ProcessedMetadataValue
 }
@@ -210,7 +216,7 @@ func (gsp *gcpStorageProvider) WasProcessed(path string) (bool, error) {
 		return true, err
 	}
 
-	return isMarkedAsProcessed(attrs.Metadata), nil
+	return isMarkedAsProcessed(attrs.Metadata, gsp.metadataKey), nil
 }
 
 func (gsp *gcpStorageProvider) MarkProcessed(path string) error {
@@ -224,7 +230,7 @@ func (gsp *gcpStorageProvider) MarkProcessed(path string) error {
 		metadata = make(map[string]string)
 	}
 
-	metadata[ProcessedMetadataKey] = ProcessedMetadataValue
+	metadata[gsp.metadataKey] = ProcessedMetadataValue
 
 	update := storage.ObjectAttrsToUpdate{
 		Metadata: metadata,
@@ -239,14 +245,18 @@ func (gsp *gcpStorageProvider) ListUnprocessed() ([]string, error) {
 
 	it := gsp.getBucket().Objects(gsp.ctx, nil)
 
-	for objAttrs, err := it.Next(); err != iterator.Done; {
+	for {
+		objAttrs, err := it.Next()
+		if err == iterator.Done {
+			break
+		}
 
 		if err != nil {
 			return paths, err
 		}
 
 		// Eliminate these early rather than polling the network again.
-		if isMarkedAsProcessed(objAttrs.Metadata) {
+		if isMarkedAsProcessed(objAttrs.Metadata, gsp.metadataKey) {
 			continue
 		}
 

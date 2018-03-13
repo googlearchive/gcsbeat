@@ -5,26 +5,33 @@
 gcsbeat:
   # The number of seconds between looking for new files in your bucket.
   interval: 60s
-  
+
   # The bucket containing your log files. If the `bucket_id` begins with file:// then the directory
   # pointed to will be used instead. This can be useful for testing your glob logic before
   # going live.
   bucket_id: my_log_bucket
-  
+
   # The path to the key to authenticate your user to the bucket.
   # this service user _should_ have the `storage.objects.update`
   # permission so it can create metadata on the object preventing
   # it from being scanned multiple times.
   json_key_file: /path/to/key.json
-  
+
   # Should the log file be deleted after its contents have been updated?
   delete: false
-  
+
   # A glob pattern to filter files. Only files with names matching this will be considered.
-  file_matches: *.log
-  
+  file_matches: "*.log"
+
   # Any files matching this glob are excluded from processing.
-  file_exclude: bak_*
+  file_exclude: "bak_*"
+
+  # This key will be set on the objects after they've been processed by the beat. That way you can
+  # stop the beat and not upload files again or prevent them from being uploaded by setting the
+  # field manually.
+  #
+  # NOTE the key is a flag, if a file was partially processed some events will be resent.
+  metadata_key: x-goog-meta-gcsbeat
 
 #================================ General =====================================
 

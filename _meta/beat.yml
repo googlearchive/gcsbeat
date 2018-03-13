@@ -21,7 +21,14 @@ gcsbeat:
   delete: false
 
   # A glob pattern to filter files. Only files with names matching this will be considered.
-  file_matches: *.log
-  
+  file_matches: "*.log"
+
   # Any files matching this glob are excluded from processing.
-  file_exclude: bak_*
+  file_exclude: "bak_*"
+
+  # This key will be set on the objects after they've been processed by the beat. That way you can
+  # stop the beat and not upload files again or prevent them from being uploaded by setting the
+  # field manually.
+  #
+  # NOTE the key is a flag, if a file was partially processed some events will be resent.
+  metadata_key: x-goog-meta-gcsbeat

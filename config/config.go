@@ -6,6 +6,7 @@ package config
 import (
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/elastic/beats/libbeat/common"
@@ -13,12 +14,13 @@ import (
 )
 
 type Config struct {
-	Interval        time.Duration `config:"interval"`
-	BucketId        string        `config:"bucket_id" validate:"required"`
-	JsonKeyFile     string        `config:"json_key_file"`
-	Delete          bool          `config:"delete"`
-	Match           string        `config:"file_matches"`
-	Exclude         string        `config:"file_exclude"`
+	Interval    time.Duration `config:"interval"`
+	BucketId    string        `config:"bucket_id" validate:"required"`
+	JsonKeyFile string        `config:"json_key_file"`
+	Delete      bool          `config:"delete"`
+	Match       string        `config:"file_matches"`
+	Exclude     string        `config:"file_exclude"`
+	MetadataKey string        `config:"metadata_key"`
 
 	// TODO add the ability to treat .gz files as gzipped streams
 
@@ -33,6 +35,7 @@ var DefaultConfig = Config{
 	Delete:      false,
 	Match:       "*",
 	Exclude:     "",
+	MetadataKey: "x-goog-meta-gcsbeat",
 }
 
 func GetAndValidateConfig(cfg *common.Config) (*Config, error) {
@@ -41,6 +44,11 @@ func GetAndValidateConfig(cfg *common.Config) (*Config, error) {
 		return nil, fmt.Errorf("error in config file: %v", err)
 	}
 
+	// Preprocessing
+	// GCS keys must not have leading or trailing whitespace
+	c.MetadataKey = strings.TrimSpace(c.MetadataKey)
+
+	// Validation
 	if c.Interval <= 0 {
 		return nil, errors.New("Interval must be positive.")
 	}
@@ -51,6 +59,10 @@ func GetAndValidateConfig(cfg *common.Config) (*Config, error) {
 
 	if _, err := glob.Compile(c.Exclude); err != nil {
 		return nil, errors.New("The exclude parameter is not a valid glob.")
+	}
+
+	if c.MetadataKey == "" {
+		return nil, errors.New("The metadata key must not be blank.")
 	}
 
 	return &c, nil
