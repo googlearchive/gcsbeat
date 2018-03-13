@@ -3,17 +3,16 @@ package beater
 import (
 	"fmt"
 	"time"
-
-	"bufio"
 	"strings"
 
 	"github.com/GoogleCloudPlatform/gcsbeat/config"
+	"github.com/GoogleCloudPlatform/gcsbeat/beater/codec"
+	"github.com/gobwas/glob"
+	"github.com/spf13/afero"
 	"github.com/deckarep/golang-set"
 	"github.com/elastic/beats/libbeat/beat"
 	"github.com/elastic/beats/libbeat/common"
 	"github.com/elastic/beats/libbeat/logp"
-	"github.com/gobwas/glob"
-	"github.com/spf13/afero"
 )
 
 const (
@@ -163,21 +162,15 @@ func (bt *Gcpstoragebeat) downloadFile(path string) {
 
 	defer input.Close()
 
-	scanner := bufio.NewScanner(input)
-	lineNumber := 1
-	for scanner.Scan() {
+	scanner := codec.NewBufioCodec(path, input)
+
+	for scanner.Next() {
 		event := beat.Event{
 			Timestamp: time.Now(),
-			Fields: common.MapStr{
-				"event": scanner.Text(),
-				"file":  path,
-				"line":  lineNumber,
-			},
+			Fields: scanner.Value(),
 		}
 
 		bt.client.Publish(event)
-
-		lineNumber += 1
 	}
 
 	if err := scanner.Err(); err != nil {

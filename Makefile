@@ -27,3 +27,6 @@ before-build:
 # Collects all dependencies and then calls update
 .PHONY: collect
 collect:
+
+.PHONY: pre-commit
+pre-commit: fmt clean update test
