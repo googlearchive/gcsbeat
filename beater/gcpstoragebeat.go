@@ -2,14 +2,15 @@ package beater
 
 import (
 	"fmt"
-	"time"
 	"strings"
+	"time"
 
-	"github.com/GoogleCloudPlatform/gcsbeat/config"
 	"github.com/GoogleCloudPlatform/gcsbeat/beater/codec"
+	"github.com/GoogleCloudPlatform/gcsbeat/config"
+	"github.com/deckarep/golang-set"
 	"github.com/gobwas/glob"
 	"github.com/spf13/afero"
-	"github.com/deckarep/golang-set"
+
 	"github.com/elastic/beats/libbeat/beat"
 	"github.com/elastic/beats/libbeat/common"
 	"github.com/elastic/beats/libbeat/logp"
@@ -162,19 +163,23 @@ func (bt *Gcpstoragebeat) downloadFile(path string) {
 
 	defer input.Close()
 
-	scanner := codec.NewBufioCodec(path, input)
+	codec, err := codec.NewCodec(bt.config.Codec, path, input)
+	if err != nil {
+		bt.logger.Errorf("Error parsing file %q: %v", path, err)
+		return
+	}
 
-	for scanner.Next() {
+	for codec.Next() {
 		event := beat.Event{
 			Timestamp: time.Now(),
-			Fields: scanner.Value(),
+			Fields:    codec.Value(),
 		}
 
 		bt.client.Publish(event)
 	}
 
-	if err := scanner.Err(); err != nil {
-		bt.logger.Errorf("Error scanning file %q: %v", path, err)
+	if err := codec.Err(); err != nil {
+		bt.logger.Errorf("Error parsing file %q: %v", path, err)
 		return
 	}
 

@@ -9,8 +9,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/elastic/beats/libbeat/common"
 	"github.com/gobwas/glob"
+	"github.com/GoogleCloudPlatform/gcsbeat/beater/codec"
+	"github.com/elastic/beats/libbeat/common"
 )
 
 type Config struct {
@@ -21,6 +22,7 @@ type Config struct {
 	Match       string        `config:"file_matches"`
 	Exclude     string        `config:"file_exclude"`
 	MetadataKey string        `config:"metadata_key"`
+	Codec       string        `config:"codec"`
 
 	// TODO add the ability to treat .gz files as gzipped streams
 
@@ -36,6 +38,7 @@ var DefaultConfig = Config{
 	Match:       "*",
 	Exclude:     "",
 	MetadataKey: "x-goog-meta-gcsbeat",
+	Codec:       "text",
 }
 
 func GetAndValidateConfig(cfg *common.Config) (*Config, error) {
@@ -63,6 +66,11 @@ func GetAndValidateConfig(cfg *common.Config) (*Config, error) {
 
 	if c.MetadataKey == "" {
 		return nil, errors.New("The metadata key must not be blank.")
+	}
+
+	if !codec.IsValidCodec(c.Codec) {
+		msg := fmt.Sprintf("%q is an invalid codec. Use one of: %v", c.Codec, codec.ValidCodecs())
+		return nil, errors.New(msg)
 	}
 
 	return &c, nil

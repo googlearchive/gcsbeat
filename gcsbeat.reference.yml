@@ -33,6 +33,18 @@ gcsbeat:
   # NOTE the key is a flag, if a file was partially processed some events will be resent.
   metadata_key: x-goog-meta-gcsbeat
 
+  # Codec describes how the values in the matched files will be parsed.
+  #
+  # Possible values
+  #
+  # * `text` A newline delimited file. Sends one event per line including the file name and line
+  #   number.
+  # * `json-array` A JSON array containing maps e.g. "[{...}, ...]" Sends one event per map.
+  #   Parsed values are added to the log event.
+  # * `json-stream` A file of concatenated JSON maps e.g. "{...}{...}..." Sends one event per map.
+  #   Parsed values are added to the log event.
+  codec: "text"
+
 #================================ General ======================================
 
 # The name of the shipper that publishes the network data. It can be used to group

@@ -8,112 +8,14 @@ import (
 	"github.com/elastic/beats/libbeat/common"
 )
 
-func TestGetAndValidateConfigMissingRequiredFields(t *testing.T) {
-	cases := map[string]struct {
-		BucketId string
-	}{
-		"missing bucket id": {
-			BucketId: "",
-		},
-	}
-
-	for tn, tc := range cases {
-		c := common.NewConfig()
-		c.SetString("bucket_id", -1, tc.BucketId)
-		_, err := GetAndValidateConfig(c)
-
-		if err == nil {
-			t.Errorf("%s: expected to fail", tn)
-		}
-	}
+type configTestCase struct {
+	Name      string
+	ExpectErr bool
+	Config    *common.Config
 }
 
-func TestGetAndValidateConfigInvalidConfigurations(t *testing.T) {
-	cases := map[string]struct {
-		Interval        int64
-		BucketId        string
-		Delete          bool
-		Match           string
-		Exclude         string
-		MetadataKey     string
-	}{
-		"zero interval": {
-			Interval:        0,
-			BucketId:        "a",
-			Delete:          true,
-			Match:           "*",
-			Exclude:         "",
-			MetadataKey:     "x-goog-meta-gcsbeat",
-		},
-		"negative interval": {
-			Interval:        0,
-			BucketId:        "a",
-			Delete:          true,
-			Match:           "*",
-			Exclude:         "",
-			MetadataKey:     "x-goog-meta-gcsbeat",
-		},
-		"missing bucket id": {
-			Interval:        1,
-			BucketId:        "",
-			Delete:          true,
-			Match:           "*",
-			Exclude:         "",
-			MetadataKey:     "x-goog-meta-gcsbeat",
-		},
-		"bad match glob": {
-			Interval:        1,
-			BucketId:        "a",
-			Delete:          false,
-			Match:           `[a-z`,
-			Exclude:         "",
-			MetadataKey:     "x-goog-meta-gcsbeat",
-
-		},
-		"bad exclude glob": {
-			Interval:        1,
-			BucketId:        "a",
-			Delete:          false,
-			Match:           "",
-			Exclude:         `[a-z`,
-			MetadataKey:     "x-goog-meta-gcsbeat",
-		},
-		"whitespace only metadata key": {
-			Interval:        1,
-			BucketId:        "a",
-			Delete:          false,
-			Match:           "",
-			Exclude:         `[a-z`,
-			MetadataKey:     "\r\n\t ",
-		},
-		"empty metadata key": {
-			Interval:        1,
-			BucketId:        "a",
-			Delete:          false,
-			Match:           "",
-			Exclude:         `[a-z`,
-			MetadataKey:     "",
-		},
-	}
-
-	for tn, tc := range cases {
-		c := common.NewConfig()
-		c.SetInt("interval", -1, tc.Interval)
-		c.SetString("bucket_id", -1, tc.BucketId)
-		c.SetBool("delete", -1, tc.Delete)
-		c.SetString("file_matches", -1, tc.Match)
-		c.SetString("file_exclude", -1, tc.Exclude)
-		c.SetString("metadata_key", -1, tc.MetadataKey)
-
-		_, err := GetAndValidateConfig(c)
-
-		if err == nil {
-			t.Errorf("%s: expected to fail", tn)
-		}
-	}
-}
-
-func TestGetAndValidateConfigValidConfiguration(t *testing.T) {
+func configure(name string, expectedFail bool, props map[string]interface{}) configTestCase {
+	// default good config
 	c := common.NewConfig()
 	c.SetInt("interval", -1, 1)
 	c.SetString("bucket_id", -1, "foo")
@@ -121,10 +23,57 @@ func TestGetAndValidateConfigValidConfiguration(t *testing.T) {
 	c.SetString("matches", -1, "*.log*")
 	c.SetString("exclude", -1, "bak_*")
 	c.SetString("metadata_key", -1, "x-goog-meta-gcsbeat")
+	c.SetString("codec", -1, "text")
 
-	_, err := GetAndValidateConfig(c)
+	if props == nil {
+		return configTestCase{name, expectedFail, c}
+	}
 
-	if err != nil {
-		t.Errorf("expected to succeed but got error %v", err)
+	// then add in the bad
+	bad, _ := common.NewConfigFrom(props)
+	out, _ := common.MergeConfigs(c, bad)
+
+	return configTestCase{name, expectedFail, out}
+}
+
+func TestGetAndValidateInvalidProps(t *testing.T) {
+	tests := []configTestCase{
+		configure("default", false, nil),
+
+		// intervals
+		configure("zero interval", true, map[string]interface{}{"interval": 0}),
+		configure("negative interval", true, map[string]interface{}{"interval": -1}),
+
+		// buckets
+		configure("missing id", true, map[string]interface{}{"bucket_id": ""}),
+
+		// globs
+		configure("good match", false, map[string]interface{}{"file_matches": "*"}),
+		configure("bad match", true, map[string]interface{}{"file_matches": "[a-z"}),
+
+		configure("good exclude", false, map[string]interface{}{"file_exclude": "*"}),
+		configure("bad exclude", true, map[string]interface{}{"file_exclude": "[a-z"}),
+
+		// metadata keys
+		configure("whitesapce metadata", true, map[string]interface{}{"metadata_key": "\r\n\t "}),
+		configure("empty metadata", true, map[string]interface{}{"metadata_key": ""}),
+		configure("contains whitespace", false, map[string]interface{}{"metadata_key": " foo bar"}),
+
+		// codecs
+		configure("codec empty", true, map[string]interface{}{"codec": ""}),
+		configure("codec unknown", true, map[string]interface{}{"codec": "foo"}),
+
+		configure("codec text", false, map[string]interface{}{"codec": "text"}),
+		configure("codec json array", false, map[string]interface{}{"codec": "json-array"}),
+		configure("codec json stream", false, map[string]interface{}{"codec": "json-stream"}),
+	}
+
+	for _, testCase := range tests {
+		_, err := GetAndValidateConfig(testCase.Config)
+
+		wasErr := err != nil
+		if wasErr != testCase.ExpectErr {
+			t.Errorf("%q | Got error %v, expected error? %v", testCase.Name, err, testCase.ExpectErr)
+		}
 	}
 }
