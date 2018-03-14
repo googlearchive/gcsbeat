@@ -215,21 +215,21 @@ None
 [float]
 === `event`
 
-type: string
+type: text
 
-required: True
+required: False
 
-The raw line of the log file.
+The raw line of the log file; only applicable with text codec. Only applicable with the "text" codec.
 
 
 [float]
 === `file`
 
-type: string
+type: text
 
-required: True
+required: False
 
-The name of the bucket object this line came from.
+The name of the bucket object this line came from. Only applicable with the "text" codec.
 
 
 [float]
@@ -237,9 +237,9 @@ The name of the bucket object this line came from.
 
 type: int
 
-required: True
+required: False
 
-The line number of the bucket object this line was found on. Lines start at one (not zero)
+The line number of the object this event comes from. One based-indexing. Only applicable with the "text" codec.
 
 
 [[exported-fields-kubernetes-processor]]

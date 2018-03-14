@@ -3,18 +3,22 @@
   description:
   fields:
     - name: event
-      type: string
-      required: true
+      type: text
+      required: false
       description: >
-        The raw line of the log file.
+        The raw line of the log file; only applicable with text codec.
+        Only applicable with the "text" codec.
     - name: file
-      type: string
-      required: true
+      type: text
+      required: false
       description: >
         The name of the bucket object this line came from.
+        Only applicable with the "text" codec.
     - name: line
       type: int
-      required: true
+      required: false
       description: >
-        The line number of the bucket object this line was found on. Lines start at one (not zero)
+        The line number of the object this event comes from.
+        One based-indexing.
+        Only applicable with the "text" codec.
 
