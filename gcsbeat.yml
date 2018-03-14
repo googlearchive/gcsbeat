@@ -45,6 +45,11 @@ gcsbeat:
   #   Parsed values are added to the log event.
   codec: "text"
 
+  # If set to true, files ending in .gz are decompressed before they're parsed by the codec.
+  # The file will be skipped if it has the suffix, but can't be opened as a gzip
+  # for example, if it has a bad magic number.
+  unpack_gzip: false
+
 #================================ General =====================================
 
 # The name of the shipper that publishes the network data. It can be used to group

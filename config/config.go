@@ -23,11 +23,7 @@ type Config struct {
 	Exclude     string        `config:"file_exclude"`
 	MetadataKey string        `config:"metadata_key"`
 	Codec       string        `config:"codec"`
-
-	// TODO add the ability to treat .gz files as gzipped streams
-
-	// TODO add a flag to read stackdriver logs (JSON files with lists of event objects)
-	// https://cloud.google.com/logging/docs/export/using_exported_logs
+	UnpackGzip  bool          `config:"unpack_gzip"`
 }
 
 var DefaultConfig = Config{
@@ -39,6 +35,7 @@ var DefaultConfig = Config{
 	Exclude:     "",
 	MetadataKey: "x-goog-meta-gcsbeat",
 	Codec:       "text",
+	UnpackGzip:  false,
 }
 
 func GetAndValidateConfig(cfg *common.Config) (*Config, error) {

@@ -24,6 +24,7 @@ func configure(name string, expectedFail bool, props map[string]interface{}) con
 	c.SetString("exclude", -1, "bak_*")
 	c.SetString("metadata_key", -1, "x-goog-meta-gcsbeat")
 	c.SetString("codec", -1, "text")
+	c.SetBool("unpack_gzip", -1, false)
 
 	if props == nil {
 		return configTestCase{name, expectedFail, c}

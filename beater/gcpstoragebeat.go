@@ -1,6 +1,7 @@
 package beater
 
 import (
+	"compress/gzip"
 	"fmt"
 	"strings"
 	"time"
@@ -160,6 +161,18 @@ func (bt *Gcpstoragebeat) downloadFile(path string) {
 	}
 
 	defer input.Close()
+
+	if bt.config.UnpackGzip && strings.HasSuffix(path, ".gz") {
+		gzReader, err := gzip.NewReader(input)
+
+		if err != nil {
+			bt.logger.Errorf("Error parsing file %q: %v", path, err)
+			return
+		}
+
+		defer gzReader.Close()
+		input = gzReader
+	}
 
 	codec, err := codec.NewCodec(bt.config.Codec, path, input)
 	if err != nil {
