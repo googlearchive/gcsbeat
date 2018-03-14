@@ -1,7 +1,10 @@
 package beater
 
 import (
+	"fmt"
 	"io"
+	"runtime"
+	"time"
 
 	"cloud.google.com/go/storage"
 	"github.com/spf13/afero"
@@ -11,6 +14,7 @@ import (
 
 	"github.com/GoogleCloudPlatform/gcsbeat/config"
 	"github.com/elastic/beats/libbeat/logp"
+	"github.com/elastic/beats/libbeat/version"
 )
 
 const (
@@ -151,7 +155,7 @@ func newGcpStorageProvider(cfg *config.Config) (StorageProvider, error) {
 
 	options := []option.ClientOption{
 		option.WithCredentialsFile(cfg.JsonKeyFile),
-		option.WithUserAgent(UserAgent),
+		option.WithUserAgent(GetUserAgent()),
 	}
 
 	client, err := storage.NewClient(ctx, options...)
@@ -264,4 +268,16 @@ func (gsp *gcpStorageProvider) ListUnprocessed() ([]string, error) {
 	}
 
 	return paths, nil
+}
+
+
+// GetUserAgent gets a de-facto standardish user agent string.
+// It includes, OS, ARCH, build date and git commit hash.
+// It uses "Elastic/GCSBeat" as the software identifier.
+func GetUserAgent() string {
+	os := fmt.Sprintf("(%s; %s)", runtime.GOOS, runtime.GOARCH)
+	ver := fmt.Sprintf("version/%s", version.Commit())
+	built := fmt.Sprintf("built/%s", version.BuildTime().Format(time.RFC3339))
+
+	return fmt.Sprintf("Elastic/GCSBeat %s %s %s", os, ver, built)
 }

@@ -16,10 +16,6 @@ import (
 	"github.com/elastic/beats/libbeat/logp"
 )
 
-const (
-	UserAgent = "gcp-storage-beat"
-)
-
 type Gcpstoragebeat struct {
 	done          chan struct{}
 	downloadQueue chan string
@@ -67,6 +63,8 @@ func connectToBucket(cfg *config.Config) (StorageProvider, error) {
 
 func (bt *Gcpstoragebeat) Run(b *beat.Beat) error {
 	bt.logger.Info("GCP storage beat is running! Hit CTRL-C to stop it.")
+	bt.logger.Infof("Version: %q", GetUserAgent())
+	bt.logger.Infof("Config: %+v", bt.config)
 
 	var err error
 	bt.client, err = b.Publisher.Connect()
