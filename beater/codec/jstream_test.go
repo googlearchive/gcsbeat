@@ -46,7 +46,7 @@ func TestJsonStreamNextErr(t *testing.T) {
 
 	for tn, tc := range cases {
 		reader := strings.NewReader(tc.Json)
-		c := NewJsonStreamCodec(reader)
+		c := NewJsonStreamCodec("file/path", reader)
 
 		if c.Err() != nil {
 			t.Errorf("%q | Not expected to start with an error, got %q", tn, c.Err())

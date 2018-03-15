@@ -219,7 +219,17 @@ type: text
 
 required: False
 
-The raw line of the log file; only applicable with text codec. Only applicable with the "text" codec.
+The raw line of the log file; only applicable with text codec. Only applicable to the "text" codec.
+
+
+[float]
+=== `json`
+
+type: object
+
+required: False
+
+JSON decoded message payload. Only applicable to the "json" codecs.
 
 
 [float]
@@ -227,9 +237,9 @@ The raw line of the log file; only applicable with text codec. Only applicable w
 
 type: text
 
-required: False
+required: True
 
-The name of the bucket object this line came from. Only applicable with the "text" codec.
+The name of the storage object the event came from.
 
 
 [float]
@@ -237,9 +247,9 @@ The name of the bucket object this line came from. Only applicable with the "tex
 
 type: int
 
-required: False
+required: True
 
-The line number of the object this event comes from. One based-indexing. Only applicable with the "text" codec.
+The position of the event in the file. Numbering starts at 1. For "text" codecs this corresponds to the line number. For "json-*" codecs this corresponds to the index of the decoded top-level object.
 
 
 [[exported-fields-kubernetes-processor]]

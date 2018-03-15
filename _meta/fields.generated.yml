@@ -7,18 +7,22 @@
       required: false
       description: >
         The raw line of the log file; only applicable with text codec.
-        Only applicable with the "text" codec.
+        Only applicable to the "text" codec.
+    - name: json
+      type: object
+      required: false
+      description: >
+        JSON decoded message payload.
+        Only applicable to the "json" codecs.
     - name: file
       type: text
-      required: false
+      required: true
       description: >
-        The name of the bucket object this line came from.
-        Only applicable with the "text" codec.
+        The name of the storage object the event came from.
     - name: line
       type: int
-      required: false
+      required: true
       description: >
-        The line number of the object this event comes from.
-        One based-indexing.
-        Only applicable with the "text" codec.
-
+        The position of the event in the file. Numbering starts at 1.
+        For "text" codecs this corresponds to the line number.
+        For "json-*" codecs this corresponds to the index of the decoded top-level object.

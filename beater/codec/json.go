@@ -11,12 +11,14 @@ import (
 
 type JsonObject map[string]interface{}
 
-func NewJsonArrayCodec(input io.Reader) Codec {
+func NewJsonArrayCodec(path string, input io.Reader) Codec {
 
 	codec := &JsonArrayCodec{
-		decoder: json.NewDecoder(input),
-		value:   common.MapStr{},
-		err:     nil,
+		decoder:    json.NewDecoder(input),
+		value:      common.MapStr{},
+		err:        nil,
+		lineNumber: 0,
+		path:       path,
 	}
 
 	codec.init()
@@ -29,9 +31,11 @@ func NewJsonArrayCodec(input io.Reader) Codec {
 // Inspiration for this decoding technique taken from go's JSON documentation
 // https://golang.org/pkg/encoding/json/#Decoder.Decode
 type JsonArrayCodec struct {
-	decoder *json.Decoder
-	value   common.MapStr
-	err     error
+	decoder    *json.Decoder
+	value      common.MapStr
+	err        error
+	lineNumber int
+	path       string
 }
 
 func (codec *JsonArrayCodec) init() {
@@ -49,8 +53,15 @@ func (codec *JsonArrayCodec) Next() bool {
 		return false
 	}
 
-	codec.value = make(common.MapStr)
-	codec.err = codec.decoder.Decode(&codec.value)
+	jsonData := make(map[string]interface{})
+	codec.err = codec.decoder.Decode(&jsonData)
+
+	codec.lineNumber++
+	codec.value = common.MapStr{
+		"json": jsonData,
+		"line": codec.lineNumber,
+		"path": codec.path,
+	}
 
 	return codec.err == nil
 }

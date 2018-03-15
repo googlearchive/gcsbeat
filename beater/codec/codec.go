@@ -31,10 +31,10 @@ type Codec interface {
 func NewCodec(codec, filename string, reader io.Reader) (Codec, error) {
 	switch {
 	case codec == JsonArrayCodecId:
-		return NewJsonArrayCodec(reader), nil
+		return NewJsonArrayCodec(filename, reader), nil
 
 	case codec == JsonStreamcodecId:
-		return NewJsonStreamCodec(reader), nil
+		return NewJsonStreamCodec(filename, reader), nil
 
 	case codec == TextCodecId:
 		return NewBufioCodec(filename, reader), nil
