@@ -1,99 +1,114 @@
 # GCSBeat
 
-GCSBeat is an elastic Beat for Google Cloud Storage.
-The beat reads objects from a specified bucket line by line, forwards them to your configured 
-outputs then deletes the file or marks it as processed with a metadata attribute to avoid processing
-it again.
+GCSBeat is an Elastic Beat to read logs/data from Google Cloud Storage (GCS) buckets.
+The beat reads JSON objects or raw text from files in a bucket and forwards them to a [beats output](https://www.elastic.co/guide/en/beats/filebeat/current/configuring-output.html).
+
+Example use-cases:
+
+* Read [Stackdriver logs]() from a GCS bucket into Elastic.
+* Read gzipped logs from cold-storage into Elastic.
+* Restore data from an Elastic dump.
+* Watch files on a local path (possibly a mounted GCS bucket) and upload them.
+* Parse JSON logs and upload them.
+
+## Configuration Options
+
+See the [_meta/beat.yml file](./_meta/beat.yml) for a list of configuration options.
+
+Make sure your user has permissions to read files on the bucket and write metadata.
+GCSBeat marks objects as being processed using metadata keys.
+
+### Example Configurations
+
+Read archived redis logs from the local filesystem hourly and delete them after upload:
+
+```yaml
+gcsbeat:
+  interval: 60m
+  bucket_id: "file:///var/log/redis"
+  delete: true
+  file_matches: "*.log.gz"
+  codec: "text"
+  unpack_gzip: true
+```
+
+Read Stackdriver logs from a bucket:
+
+```yaml
+gcsbeat:
+  bucket_id: my_log_bucket
+  json_key_file: /path/to/key.json
+  file_matches: "*.json"
+  codec: "json-stream"
+```
+
+Read files into two separate Elastic clusters:
+
+```yaml
+# Cluster 1 beat
+gcsbeat:
+  bucket_id: my_log_bucket
+  json_key_file: /region-one-key.json
+  metadata_key: "region-one-beat"
+  
+# Cluster 2 beat
+gcsbeat:
+  bucket_id: my_log_bucket
+  json_key_file: /disaster-recovery-key.json
+  file_matches: "*.log"
+  metadata_key: "disaster-recovery-beat"
+```
 
 ## Getting Started with GCSBeat
+
+### Download
+
+ - [ ] TODO build compiled binaries and release them on the downloads page.
 
 ### Requirements
 
 * [Golang](https://golang.org/dl/) 1.10
-
+* `virtualenv` >= 15.1.*
+* `python` 2.7.*
 
 ### Build
 
 To build the binary for GCSBeat run the command below. This will generate a binary
-in the same directory with the name GCSBeat.
+in the same directory with the name `gcsbeat`.
 
+```shell
+# Clean the beat, update the docs and build it
+make clean && make update && make
 ```
-make
-```
-
 
 ### Run
 
-To run GCSBeat with debugging output enabled, run:
+To run `gcsbeat` with info level logging configured:
 
-```
-./gcsbeat -c gcsbeat.yml -e -d "*"
-```
-
-
-### Test
-
-To test GCSBeat, run the following command:
-
-```
-make testsuite
+```shell
+./gcsbeat -c gcsbeat.yml -e -v
 ```
 
-alternatively:
-```
-make unit-tests
-make system-tests
-make integration-tests
-make coverage-report
+Normal Mode:
+
+```shell
+./gcsbeat -c gcsbeat.yml
 ```
 
-The test coverage is reported in the folder `./build/coverage/`
-
-### Update
-
-Each beat has a template for the mapping in elasticsearch and a documentation for the fields
-which is automatically generated based on `fields.yml` by running the following command.
+## License
 
 ```
-make update
+Copyright (c) 2018 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 ```
-
-
-### Cleanup
-
-To clean  GCSBeat source code, run the following commands:
-
-```
-make fmt
-make simplify
-```
-
-To clean up the build directory and generated artifacts, run:
-
-```
-make clean
-```
-
-
-### Clone
-
-To clone GCSBeat from the git repository, run the following commands:
-
-```
-mkdir -p ${GOPATH}/src/github.com/GoogleCloudPlatform/gcsbeat
-git clone https://github.com/GoogleCloudPlatform/gcsbeat ${GOPATH}/src/github.com/GoogleCloudPlatform/gcsbeat
-```
-
-
-For further development, check out the [beat developer guide](https://www.elastic.co/guide/en/beats/libbeat/current/new-beat.html).
-
-
-## Packaging
-
-The beat frameworks provides tools to crosscompile and package your beat for different platforms. This requires [docker](https://www.docker.com/) and vendoring as described above. To build packages of your beat, run the following command:
-
-```
-make package
-```
-
-This will fetch and create all images required for the build process. The hole process to finish can take several minutes.
