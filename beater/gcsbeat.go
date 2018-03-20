@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/GoogleCloudPlatform/gcsbeat/beater/codec"
+	"github.com/GoogleCloudPlatform/gcsbeat/beater/storage"
 	"github.com/GoogleCloudPlatform/gcsbeat/config"
 	"github.com/deckarep/golang-set"
 	"github.com/gobwas/glob"
@@ -22,7 +23,7 @@ type Gcpstoragebeat struct {
 	downloadQueue chan string
 	config        *config.Config
 	client        beat.Client
-	bucket        StorageProvider
+	bucket        storage.StorageProvider
 	logger        *logp.Logger
 }
 
@@ -44,27 +45,27 @@ func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
 		done:          make(chan struct{}),
 		downloadQueue: make(chan string),
 		config:        c,
-		bucket:        NewLoggingStorageProvider(bucket),
+		bucket:        storage.NewLoggingStorageProvider(bucket),
 		logger:        logp.NewLogger("GCS:" + c.BucketId),
 	}
 
 	return bt, nil
 }
 
-func connectToBucket(cfg *config.Config) (StorageProvider, error) {
+func connectToBucket(cfg *config.Config) (storage.StorageProvider, error) {
 	if strings.HasPrefix(cfg.BucketId, "file://") {
 		basePath := cfg.BucketId[7:]
 		fs := afero.NewBasePathFs(afero.NewOsFs(), basePath)
-		return NewAferoStorageProvider(fs), nil
+		return storage.NewAferoStorageProvider(fs), nil
 	}
 
 	// connect to GCP
-	return newGcpStorageProvider(cfg)
+	return storage.NewGcpStorageProvider(cfg)
 }
 
 func (bt *Gcpstoragebeat) Run(b *beat.Beat) error {
 	bt.logger.Info("GCP storage beat is running! Hit CTRL-C to stop it.")
-	bt.logger.Infof("Version: %q", GetUserAgent())
+	bt.logger.Infof("Version: %q", storage.GetUserAgent())
 	bt.logger.Infof("Config: %+v", bt.config)
 
 	var err error

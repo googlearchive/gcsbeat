@@ -1,4 +1,4 @@
-package beater
+package storage
 
 import (
 	"fmt"
@@ -148,7 +148,7 @@ func (asp *aferoStorageProvider) MarkProcessed(path string) error {
 	return nil
 }
 
-func newGcpStorageProvider(cfg *config.Config) (StorageProvider, error) {
+func NewGcpStorageProvider(cfg *config.Config) (StorageProvider, error) {
 	bucket := cfg.BucketId
 
 	ctx := context.Background()
