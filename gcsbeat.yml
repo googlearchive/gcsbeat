@@ -50,6 +50,15 @@ gcsbeat:
   # for example, if it has a bad magic number.
   unpack_gzip: false
 
+  # If set, the beat WILL NOT modify attributes on the files in the bucket. Instead it will store
+  # the list of processed files locally in this Bolt database.
+  # The database does take the metadata_key into account, changing the key will mean all the files
+  # will be re-processed.
+  #
+  # Caveat, the database works by storing filename/metadata_key pairs. If files are modified
+  # remotely (deleted and re-written) the changes will not be picked up.
+  processed_db_path: "processed_file_list.db"
+
 #================================ General =====================================
 
 # The name of the shipper that publishes the network data. It can be used to group

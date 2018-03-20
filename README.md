@@ -5,7 +5,7 @@ The beat reads JSON objects or raw text from files in a bucket and forwards them
 
 Example use-cases:
 
-* Read [Stackdriver logs]() from a GCS bucket into Elastic.
+* Read [Stackdriver logs](https://cloud.google.com/stackdriver/) from a GCS bucket into Elastic.
 * Read gzipped logs from cold-storage into Elastic.
 * Restore data from an Elastic dump.
 * Watch files on a local path (possibly a mounted GCS bucket) and upload them.
@@ -57,6 +57,16 @@ gcsbeat:
   json_key_file: /disaster-recovery-key.json
   file_matches: "*.log"
   metadata_key: "disaster-recovery-beat"
+```
+
+Read data from a read-only bucket:
+
+```yaml
+gcsbeat:
+  bucket_id: read_only_log_bucket
+  json_key_file: /path/to/key.json
+  file_matches: "*.log"
+  processed_db_path: "processed_file_list.db"
 ```
 
 ## Getting Started with GCSBeat

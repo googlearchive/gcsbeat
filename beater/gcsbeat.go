@@ -11,7 +11,6 @@ import (
 	"github.com/GoogleCloudPlatform/gcsbeat/config"
 	"github.com/deckarep/golang-set"
 	"github.com/gobwas/glob"
-	"github.com/spf13/afero"
 
 	"github.com/elastic/beats/libbeat/beat"
 	"github.com/elastic/beats/libbeat/common"
@@ -27,40 +26,27 @@ type Gcpstoragebeat struct {
 	logger        *logp.Logger
 }
 
-// Creates beater
+// New is called by beats to instantiate the beat
 func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
 	c, err := config.GetAndValidateConfig(cfg)
 	if err != nil {
 		return nil, err
 	}
 
-	bucket, err := connectToBucket(c)
+	bucket, err := storage.NewStorageProvider(c)
 	if err != nil {
 		return nil, fmt.Errorf("Error connecting to bucket: %v", err)
 	}
-
-	// TODO check that we have update permission so we can tag the files as updated
 
 	bt := &Gcpstoragebeat{
 		done:          make(chan struct{}),
 		downloadQueue: make(chan string),
 		config:        c,
-		bucket:        storage.NewLoggingStorageProvider(bucket),
+		bucket:        bucket,
 		logger:        logp.NewLogger("GCS:" + c.BucketId),
 	}
 
 	return bt, nil
-}
-
-func connectToBucket(cfg *config.Config) (storage.StorageProvider, error) {
-	if strings.HasPrefix(cfg.BucketId, "file://") {
-		basePath := cfg.BucketId[7:]
-		fs := afero.NewBasePathFs(afero.NewOsFs(), basePath)
-		return storage.NewAferoStorageProvider(fs), nil
-	}
-
-	// connect to GCP
-	return storage.NewGcpStorageProvider(cfg)
 }
 
 func (bt *Gcpstoragebeat) Run(b *beat.Beat) error {
@@ -203,8 +189,5 @@ func (bt *Gcpstoragebeat) closeOutFile(path string) error {
 		return bt.bucket.Remove(path)
 	}
 
-	// TODO add option (middleware?) to save a processed list locally
 	return bt.bucket.MarkProcessed(path)
-
-	// TODO add options to back up to another bucket or save files locally
 }

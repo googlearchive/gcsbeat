@@ -24,6 +24,7 @@ type Config struct {
 	MetadataKey string        `config:"metadata_key"`
 	Codec       string        `config:"codec"`
 	UnpackGzip  bool          `config:"unpack_gzip"`
+	ProcessedDbPath string    `config:"processed_db_path"`
 }
 
 var DefaultConfig = Config{
