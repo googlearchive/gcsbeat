@@ -11,6 +11,8 @@ Example use-cases:
 * Watch files on a local path (possibly a mounted GCS bucket) and upload them.
 * Parse JSON logs and upload them.
 
+Note: While this project is partially maintained by Google, this is not an official Google product.
+
 ## Configuration Options
 
 See the [_meta/beat.yml file](./_meta/beat.yml) for a list of configuration options.
