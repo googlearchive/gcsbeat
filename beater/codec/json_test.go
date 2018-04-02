@@ -18,9 +18,10 @@ package codec
 
 import (
 	"fmt"
-	"github.com/elastic/beats/libbeat/common"
 	"strings"
 	"testing"
+
+	"github.com/elastic/beats/libbeat/common"
 )
 
 func TestNewJsonArrayCodecInitValid(t *testing.T) {

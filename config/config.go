@@ -20,22 +20,23 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gobwas/glob"
 	"github.com/GoogleCloudPlatform/gcsbeat/beater/codec"
+	"github.com/gobwas/glob"
+
 	"github.com/elastic/beats/libbeat/common"
 )
 
 type Config struct {
-	Interval    time.Duration `config:"interval"`
-	BucketId    string        `config:"bucket_id" validate:"required"`
-	JsonKeyFile string        `config:"json_key_file"`
-	Delete      bool          `config:"delete"`
-	Match       string        `config:"file_matches"`
-	Exclude     string        `config:"file_exclude"`
-	MetadataKey string        `config:"metadata_key"`
-	Codec       string        `config:"codec"`
-	UnpackGzip  bool          `config:"unpack_gzip"`
-	ProcessedDbPath string    `config:"processed_db_path"`
+	Interval        time.Duration `config:"interval"`
+	BucketId        string        `config:"bucket_id" validate:"required"`
+	JsonKeyFile     string        `config:"json_key_file"`
+	Delete          bool          `config:"delete"`
+	Match           string        `config:"file_matches"`
+	Exclude         string        `config:"file_exclude"`
+	MetadataKey     string        `config:"metadata_key"`
+	Codec           string        `config:"codec"`
+	UnpackGzip      bool          `config:"unpack_gzip"`
+	ProcessedDbPath string        `config:"processed_db_path"`
 }
 
 var DefaultConfig = Config{

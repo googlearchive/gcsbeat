@@ -15,8 +15,9 @@
 package storage
 
 import (
-	"github.com/spf13/afero"
 	"io"
+
+	"github.com/spf13/afero"
 )
 
 func newAferoBucketProvider(bucket string) StorageProvider {

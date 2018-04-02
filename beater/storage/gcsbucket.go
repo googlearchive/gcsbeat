@@ -26,6 +26,7 @@ import (
 	"google.golang.org/api/option"
 
 	"github.com/GoogleCloudPlatform/gcsbeat/config"
+
 	"github.com/elastic/beats/libbeat/version"
 )
 

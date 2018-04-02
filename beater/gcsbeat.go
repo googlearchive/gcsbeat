@@ -23,7 +23,7 @@ import (
 	"github.com/GoogleCloudPlatform/gcsbeat/beater/codec"
 	"github.com/GoogleCloudPlatform/gcsbeat/beater/storage"
 	"github.com/GoogleCloudPlatform/gcsbeat/config"
-	"github.com/deckarep/golang-set"
+	mapset "github.com/deckarep/golang-set"
 	"github.com/gobwas/glob"
 
 	"github.com/elastic/beats/libbeat/beat"
