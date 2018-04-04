@@ -54,7 +54,7 @@ $(EXES): crosscompile release-template
 	
 	tar -zcvf ${BUILD_DIR}/releases/$@.tar.gz -C ${BUILD_DIR}/releases $@
 
-
+.PHONY: release-template
 release-template: update
 	mkdir -p ${RELEASE_TMEPLATE_DIR}
 	
