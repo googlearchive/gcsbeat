@@ -101,10 +101,11 @@ For further development, check out the [beat developer guide](https://www.elasti
 
 ## Packaging
 
-The beat frameworks provides tools to crosscompile and package your beat for different platforms. This requires [docker](https://www.docker.com/) and vendoring as described above. To build packages of your beat, run the following command:
+We do not use the standard beats release process to build packages.
+Use the `release` make target instead.
 
 ```
-make package
+make release
 ```
 
-This will fetch and create all images required for the build process. The whole process to finish can take several minutes.
+This process is faster and doesn't require docker to build releases.
