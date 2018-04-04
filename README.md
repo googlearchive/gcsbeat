@@ -77,9 +77,15 @@ gcsbeat:
 
 ## Getting Started with GCSBeat
 
+You can either download GCSBeat compiled binaries or build them yourself.
+
 ### Download
 
- - [ ] TODO build compiled binaries and release them on the downloads page.
+1. Download a binary for your system on the [releases page](https://github.com/GoogleCloudPlatform/gcsbeat/releases).
+2. Extract the archive and edit `gcsbeat.yml` for your environment. See above for examples.
+3. Run it. For testing use: `./gcsbeat -e -v -c gcsbeat.yml`. 
+   You can mock publishing for testing purposes using the `-N` argument.
+4. (Optional) Run `./gcsbeat setup` to install predefined indexes. 
 
 ### Requirements
 
