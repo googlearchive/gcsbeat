@@ -245,7 +245,7 @@ The name of the storage object the event came from.
 [float]
 === `line`
 
-type: int
+type: long
 
 required: True
 

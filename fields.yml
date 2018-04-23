@@ -189,7 +189,7 @@
       description: >
         The name of the storage object the event came from.
     - name: line
-      type: int
+      type: long
       required: true
       description: >
         The position of the event in the file. Numbering starts at 1.
