@@ -55,10 +55,13 @@ Create new credentials to let `gcsbeat` authenticate:
 
 	gcloud iam service-accounts keys create gcsbeat-tutorial-key.json --iam-account $ACCOUNTEMAIL
 	
-Grant permissions to `gcsbeat`. The most basic permissions you can use are `roles/storage.objectViewer`.
-Additional functionality 
+Grant permissions to `gcsbeat`. The most basic role you can use is `roles/storage.objectViewer`.
+Here we use the `objectAdmin` role because we want to track which files have been processed by 
+placing metadata tags on the files.
 
 	gcloud projects add-iam-policy-binding $PROJECT_ID --member serviceAccount:$ACCOUNTEMAIL --role "roles/storage.objectAdmin"
+
+The plugin also supports deleting the files after they've been read or keeping a local database of processed files.
 
 ## Configure GCSBeat
 
