@@ -79,6 +79,12 @@ gcsbeat:
 
 You can either download GCSBeat compiled binaries or build them yourself.
 
+### Tutorial
+
+We have a quick tutorial that will walk you through setting up permissions, creating a GCS bucket and reading data from it with gcsbeat. You can read it in the `tutorial/tutorial.md` file or click below to launch an interactive version.
+
+[![Open in Cloud Shell](http://gstatic.com/cloudssh/images/open-btn.svg)](https://console.cloud.google.com/cloudshell/open?git_repo=https%3A%2F%2Fgithub.com%2FGoogleCloudPlatform%2Fgcsbeat&page=shell&tutorial=tutorial%2Ftutorial.md)
+
 ### Download
 
 1. Download a binary for your system on the [releases page](https://github.com/GoogleCloudPlatform/gcsbeat/releases).

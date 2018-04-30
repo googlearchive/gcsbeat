@@ -1,0 +1,26 @@
+gcsbeat:
+  # The number of seconds between looking for new files in your bucket.
+  interval: 1s
+
+  # The bucket containing your log files. If the `bucket_id` begins with file:// then the directory
+  # pointed to will be used instead. This can be useful for testing your glob logic before
+  # going live.
+  bucket_id: ${BUCKETNAME}
+
+  # The path to the key to authenticate your user to the bucket.
+  # this service user _should_ have the `storage.objects.update`
+  # permission so it can create metadata on the object preventing
+  # it from being scanned multiple times.
+  json_key_file: ${PWD}/gcsbeat-tutorial-key.json
+
+  delete: false
+  file_matches: "*.log"
+  file_exclude: "bak_*"
+  metadata_key: x-goog-meta-gcsbeat-tutorial
+  codec: "text"
+  unpack_gzip: false
+
+output.console:
+  pretty: true
+
+
