@@ -15,12 +15,10 @@ gcsbeat:
 
   delete: false
   file_matches: "*.log"
-  file_exclude: "bak_*"
+  file_exclude: "bak-*"
   metadata_key: x-goog-meta-gcsbeat-tutorial
   codec: "text"
   unpack_gzip: false
 
 output.console:
   pretty: true
-
-
