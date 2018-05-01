@@ -91,12 +91,40 @@ Execute `gcsbeat` to fetch the contents of the matching log file. After starting
 
 	./gcsbeat -e -v -c tutorial/config.conf
 	
+The lines will look something like the following. Note that the text is stored in the `event` field and the `line` corresponds to the line number it came from.
+
+	{
+	  "@timestamp": "2018-05-01T15:44:50.318Z",
+	  "@metadata": {
+	    "beat": "gcsbeat",
+	    "type": "doc",
+	    "version": "7.0.0-alpha1"
+	  },
+	  "file": "my-log.log",
+	  "line": 1,
+	  "beat": {...},
+	  "event": "log line 1"
+	}
+
+	
 Press `Ctrl+C` once you see the events read to the console to quit the beat.
 
 Check that the beat correctly set the tags on the files. 
 You should see the key `x-goog-meta-gcsbeat-tutorial` show up under the `my-log.log` entry but not the `bak-log.log` entry.
 
 	gsutil ls -L gs://$BUCKETNAME
+
+Example, note the `x-goog-meta-gcsbeat-tutorial` metadata tag:
+
+	gs://gcsbeat-tutorial/my-log.log:
+	    Creation time:          Tue, 01 May 2018 15:00:00 GMT
+	    Update time:            Tue, 01 May 2018 15:01:00 GMT
+	    Storage class:          REGIONAL
+	    Content-Length:         60
+	    Content-Type:           text/x-log
+	    Metadata:               
+		x-goog-meta-gcsbeat-tutorial:processed
+
 
 ## Tear down the environment
 
