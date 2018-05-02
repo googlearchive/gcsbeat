@@ -98,7 +98,9 @@ func (bt *Gcpstoragebeat) fileChangeWatcher() {
 	pendingFiles := mapset.NewSet()
 	ticker := time.NewTicker(bt.config.Interval)
 	matcher := glob.MustCompile(bt.config.Match)
+	matcherExplaination := fmt.Sprintf("matches %q", bt.config.Match)
 	excluder := glob.MustCompile(bt.config.Exclude)
+	excluderExplaination := fmt.Sprintf("does not match %q", bt.config.Exclude)
 	excluding := bt.config.Exclude != ""
 
 	for {
@@ -113,31 +115,26 @@ func (bt *Gcpstoragebeat) fileChangeWatcher() {
 			continue
 		}
 
-		alreadyPending := 0
-		excluded := 0
-		queued := 0
+		files, _ = storage.FilterAndExplain("already pending", files, func(path string) (bool, error) {
+			return !pendingFiles.Contains(path), nil
+		})
+
+		files, _ = storage.FilterAndExplain(matcherExplaination, files, func(path string) (bool, error) {
+			return matcher.Match(path), nil
+		})
+
+		files, _ = storage.FilterAndExplain(excluderExplaination, files, func(path string) (bool, error) {
+			excluded := excluding && excluder.Match(path)
+			return !excluded, nil
+		})
+
+		bt.logger.Infof("Added %d files to queue", len(files))
 		for _, path := range files {
-			if pendingFiles.Contains(path) {
-				alreadyPending++
-				continue
-			}
-
-			isIncluded := matcher.Match(path)
-			isExcluded := excluding && excluder.Match(path)
-
-			if !isIncluded || isExcluded {
-				excluded++
-				continue
-			}
+			bt.logger.Debugf(" - %q", path)
 
 			bt.downloadQueue <- path
 			pendingFiles.Add(path)
-			queued++
-
-			bt.logger.Infof("Found file: %q to import", path)
 		}
-
-		bt.logger.Infof("Found %d files, already pending: %d, regex excluded: %d, new: %d", len(files), alreadyPending, excluded, queued)
 	}
 }
 

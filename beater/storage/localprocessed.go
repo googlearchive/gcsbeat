@@ -15,6 +15,7 @@
 package storage
 
 import (
+	"fmt"
 	"io"
 
 	"github.com/GoogleCloudPlatform/gcsbeat/config"
@@ -61,7 +62,8 @@ func (middleware *localProcessedMiddleware) ListUnprocessed() ([]string, error) 
 		return nil, err
 	}
 
-	return middleware.removeProcessed(bucketKeys)
+	message := fmt.Sprintf("exists in processed db %q", middleware.db.Path())
+	return FilterAndExplain(message, bucketKeys, InvertFilter(middleware.WasProcessed))
 }
 
 func (middleware *localProcessedMiddleware) Read(path string) (io.ReadCloser, error) {
