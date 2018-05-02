@@ -130,7 +130,8 @@ func (gsp *gcpStorageProvider) MarkProcessed(path string) error {
 }
 
 func (gsp *gcpStorageProvider) ListUnprocessed() ([]string, error) {
-	var paths []string
+	allPaths := make([]string, 0)
+	filterStatus := make(map[string]bool)
 
 	it := gsp.getBucket().Objects(gsp.ctx, nil)
 
@@ -141,18 +142,22 @@ func (gsp *gcpStorageProvider) ListUnprocessed() ([]string, error) {
 		}
 
 		if err != nil {
-			return paths, err
+			return make([]string, 0), err
 		}
 
 		// Eliminate these early rather than polling the network again.
-		if isMarkedAsProcessed(objAttrs.Metadata, gsp.metadataKey) {
-			continue
-		}
+		shouldFilter := !isMarkedAsProcessed(objAttrs.Metadata, gsp.metadataKey)
 
-		paths = append(paths, objAttrs.Name)
+		filterStatus[objAttrs.Name] = shouldFilter
+		allPaths = append(allPaths, objAttrs.Name)
 	}
 
-	return paths, nil
+	explainFoundFiles(fmt.Sprintf("gs://%s", gsp.bucket), allPaths)
+
+	filterExplaination := fmt.Sprintf("has key %q", gsp.metadataKey)
+	return FilterAndExplain(filterExplaination, allPaths, func(filename string) (bool, error) {
+		return filterStatus[filename], nil
+	})
 }
 
 // GetUserAgent gets a de-facto standardish user agent string.

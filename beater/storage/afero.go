@@ -46,14 +46,12 @@ func (asp *aferoStorageProvider) ListUnprocessed() ([]string, error) {
 
 	var out []string
 	for _, f := range files {
-
-		wasProcessed, _ := asp.WasProcessed(f.Name())
-		if !wasProcessed {
-			out = append(out, f.Name())
-		}
+		out = append(out, f.Name())
 	}
 
-	return out, nil
+	explainFoundFiles(asp.fs.Name(), out)
+
+	return FilterAndExplain("exists in processed cache", out, InvertFilter(asp.WasProcessed))
 }
 
 func (asp *aferoStorageProvider) Read(path string) (io.ReadCloser, error) {

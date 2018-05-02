@@ -30,6 +30,8 @@ type StorageProvider interface {
 }
 
 func NewStorageProvider(cfg *config.Config) (StorageProvider, error) {
+	initializeExplainLogger()
+
 	provider, err := newBaseStorageProvider(cfg)
 
 	if err != nil {

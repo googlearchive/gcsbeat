@@ -87,21 +87,9 @@ You can either download GCSBeat compiled binaries or build them yourself.
    You can mock publishing for testing purposes using the `-N` argument.
 4. (Optional) Run `./gcsbeat setup` to install predefined indexes. 
 
-### Requirements
+### Build it Yourself
 
-* [Golang](https://golang.org/dl/) 1.10
-* `virtualenv` >= 15.1.*
-* `python` 2.7.*
-
-### Build
-
-To build the binary for GCSBeat run the command below. This will generate a binary
-in the same directory with the name `gcsbeat`.
-
-```shell
-# Clean the beat, update the docs and build it
-make clean && make update && make
-```
+You can build GCSBeat yourself using the instructions in the `DEVELOPING.md` file.
 
 ### Run
 
@@ -115,6 +103,61 @@ Normal Mode:
 
 ```shell
 ./gcsbeat -c gcsbeat.yml
+```
+
+### Debug
+
+It can sometimes be difficult to figure out why the plugin is or isn't picking up particular files.
+You can enable explain mode by running the beat with the `-d "Explain"` flag:
+
+```shell
+./gcsbeat -d "Explain" -e
+
+```
+
+Here's an example and how to read it:
+
+```
+The bucket gcsbeat-test has five files it can process.
+Note that Cloud Storage lists directories as files.
+INFO	[Explain]	storage/explain.go:55	Source "gs://gcsbeat-test" found 5 files
+DEBUG	[Explain]	storage/explain.go:58	 - "bak-backup-log.log"
+DEBUG	[Explain]	storage/explain.go:58	 - "new.log"
+DEBUG	[Explain]	storage/explain.go:58	 - "old.log"
+DEBUG	[Explain]	storage/explain.go:58	 - "test-folder/"
+DEBUG	[Explain]	storage/explain.go:58	 - "test-folder/test.log"
+
+Two of the files have already been marked as processed using the x-gcsbeat-processed metadata key.
+DEBUG	[Explain]	storage/explain.go:32	Test: has key "x-gcsbeat-processed"?
+DEBUG	[Explain]	storage/explain.go:43	 - "bak-backup-log.log" (pass)
+DEBUG	[Explain]	storage/explain.go:43	 - "new.log" (pass)
+DEBUG	[Explain]	storage/explain.go:46	 - "old.log" (fail)
+DEBUG	[Explain]	storage/explain.go:43	 - "test-folder/" (pass)
+DEBUG	[Explain]	storage/explain.go:46	 - "test-folder/test.log" (fail)
+INFO	[Explain]	storage/explain.go:50	Test: has key "x-gcsbeat-processed"? passed 3 of 5 files
+
+None of the remaining files are already in the pending queue.
+DEBUG	[Explain]	storage/explain.go:32	Test: already pending?
+DEBUG	[Explain]	storage/explain.go:43	 - "bak-backup-log.log" (pass)
+DEBUG	[Explain]	storage/explain.go:43	 - "new.log" (pass)
+DEBUG	[Explain]	storage/explain.go:43	 - "test-folder/" (pass)
+INFO	[Explain]	storage/explain.go:50	Test: already pending? passed 3 of 3 files
+
+Two of the files match the include filter.
+DEBUG	[Explain]	storage/explain.go:32	Test: matches "*.log"?
+DEBUG	[Explain]	storage/explain.go:43	 - "bak-backup-log.log" (pass)
+DEBUG	[Explain]	storage/explain.go:43	 - "new.log" (pass)
+DEBUG	[Explain]	storage/explain.go:46	 - "test-folder/" (fail)
+INFO	[Explain]	storage/explain.go:50	Test: matches "*.log"? passed 2 of 3 files
+
+The backup file matches the exclusion filter so it is skipped.
+DEBUG	[Explain]	storage/explain.go:32	Test: does not match "bak-*"?
+DEBUG	[Explain]	storage/explain.go:46	 - "bak-backup-log.log" (fail)
+DEBUG	[Explain]	storage/explain.go:43	 - "new.log" (pass)
+INFO	[Explain]	storage/explain.go:50	Test: does not match "bak-*"? passed 1 of 2 files
+
+Exactly one file remained.
+INFO	[GCS:gcsone]	beater/gcsbeat.go:131	Added 1 files to queue
 ```
 
 ## License

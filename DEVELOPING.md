@@ -21,14 +21,19 @@ We support the most recent version of `go`.
 If you need a feature from a newer version listed here changes are welcome.
 
 * [Golang](https://golang.org/dl/) 1.10
-
+* `virtualenv` >= 15.1.*
+* `python` 2.7.*
 
 ### Build
 
 To build the binary for GCSBeat run the command below. This will generate a binary
 in the same directory with the name GCSBeat.
 
-```
+```shell
+# Clean the beat, update the docs and build it
+make clean && make update && make
+
+# Or just build the beat
 make
 ```
 
