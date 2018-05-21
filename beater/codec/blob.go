@@ -30,11 +30,11 @@ func NewBlobCodec(path string, input io.Reader) Codec {
 	if err == nil {
 		text = base64.StdEncoding.EncodeToString(bytes)
 	}
-	
+
 	event := common.MapStr{
 		"event": text,
-		"file": path,
-		"line": 1,
+		"file":  path,
+		"line":  1,
 	}
 
 	return &BlobCodec{
@@ -48,8 +48,8 @@ func NewBlobCodec(path string, input io.Reader) Codec {
 // line number and which file the line came from
 type BlobCodec struct {
 	event   common.MapStr
-	err		error
-	hasMore	bool
+	err     error
+	hasMore bool
 }
 
 func (codec *BlobCodec) Next() bool {

@@ -66,7 +66,7 @@ func TestBlobCodecNextErr(t *testing.T) {
 func TestBlobValFunctionality(t *testing.T) {
 	data := "foo\nbar \nba zz"
 	expected := "Zm9vCmJhciAKYmEgeno="
-	
+
 	reader := strings.NewReader(data)
 	codec := NewBlobCodec("testfile", reader)
 
@@ -88,7 +88,7 @@ func TestBlobValFunctionality(t *testing.T) {
 	if val["event"] != expected {
 		t.Errorf("Expected event to be %q, got %q", expected, val["event"])
 	}
-	
+
 	if codec.Next() {
 		t.Error("Should only be able to call next once")
 	}

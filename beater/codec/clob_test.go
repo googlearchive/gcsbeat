@@ -87,7 +87,7 @@ func TestClobValFunctionality(t *testing.T) {
 	if val["event"] != data {
 		t.Errorf("Expected event to be %q, got %q", data, val["event"])
 	}
-	
+
 	if codec.Next() {
 		t.Error("Should only be able to call next once")
 	}

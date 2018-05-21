@@ -28,11 +28,11 @@ func NewClobCodec(path string, input io.Reader) Codec {
 	if err == nil {
 		text = string(bytes)
 	}
-	
+
 	event := common.MapStr{
 		"event": text,
-		"file": path,
-		"line": 1,
+		"file":  path,
+		"line":  1,
 	}
 
 	return &ClobCodec{
@@ -46,8 +46,8 @@ func NewClobCodec(path string, input io.Reader) Codec {
 // line number and which file the line came from
 type ClobCodec struct {
 	event   common.MapStr
-	err		error
-	hasMore	bool
+	err     error
+	hasMore bool
 }
 
 func (codec *ClobCodec) Next() bool {

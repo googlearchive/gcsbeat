@@ -26,7 +26,7 @@ const (
 	JsonArrayCodecId  = "json-array"
 	JsonStreamcodecId = "json-stream"
 	TextCodecId       = "text"
-	ClobCodecId	      = "clob"
+	ClobCodecId       = "clob"
 	BlobCodecId       = "blob"
 )
 
@@ -87,4 +87,3 @@ func ValidCodecs() []string {
 		BlobCodecId,
 	}
 }
-
