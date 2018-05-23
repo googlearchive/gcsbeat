@@ -22,24 +22,24 @@ import (
 
 func TestBlobCodecNextErr(t *testing.T) {
 	cases := map[string]struct {
-		Data      string
-		Length    int
-		ExpectErr bool
+		Data           string
+		ExpectedLength int
+		ExpectErr      bool
 	}{
 		"empty file": {
-			Data:      ``,
-			Length:    1,
-			ExpectErr: false,
+			Data:           ``,
+			ExpectedLength: 1,
+			ExpectErr:      false,
 		},
 		"single line": {
-			Data:      `foo`,
-			Length:    1,
-			ExpectErr: false,
+			Data:           `foo`,
+			ExpectedLength: 1,
+			ExpectErr:      false,
 		},
 		"two lines": {
-			Data:      "foo\nbar",
-			Length:    1,
-			ExpectErr: false,
+			Data:           "foo\nbar",
+			ExpectedLength: 1,
+			ExpectErr:      false,
 		},
 	}
 
@@ -57,8 +57,8 @@ func TestBlobCodecNextErr(t *testing.T) {
 			t.Errorf("%q | Got error %d, expected? %v", tn, c.Err(), tc.ExpectErr)
 		}
 
-		if counter != tc.Length {
-			t.Errorf("%q | Expected to decode %d objects, got %d", tn, tc.Length, counter)
+		if counter != tc.ExpectedLength {
+			t.Errorf("%q | Expected to decode %d objects, got %d", tn, tc.ExpectedLength, counter)
 		}
 	}
 }
@@ -78,7 +78,7 @@ func TestBlobValFunctionality(t *testing.T) {
 
 	// lines are indexed at 1
 	if val["line"] != 1 {
-		t.Errorf("Expected line to be %d, got %d", val["line"], 1)
+		t.Errorf("Expected line to be %d, got %d", 1, val["line"])
 	}
 
 	if val["file"] != "testfile" {
@@ -92,5 +92,4 @@ func TestBlobValFunctionality(t *testing.T) {
 	if codec.Next() {
 		t.Error("Should only be able to call next once")
 	}
-
 }
