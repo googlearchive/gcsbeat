@@ -43,6 +43,8 @@ gcsbeat:
   #   Parsed values are added to the log event.
   # * `json-stream` A file of concatenated JSON maps e.g. "{...}{...}..." Sends one event per map.
   #   Parsed values are added to the log event.
+  # * `clob` The full contents of a UTF-8 text file. Sends one event per file.
+  # * `blob` The full contents of a file encoded in Base64.
   codec: "text"
 
   # If set to true, files ending in .gz are decompressed before they're parsed by the codec.

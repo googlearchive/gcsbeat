@@ -26,6 +26,8 @@ const (
 	JsonArrayCodecId  = "json-array"
 	JsonStreamcodecId = "json-stream"
 	TextCodecId       = "text"
+	ClobCodecId       = "clob"
+	BlobCodecId       = "blob"
 )
 
 type Codec interface {
@@ -53,7 +55,11 @@ func NewCodec(codec, filename string, reader io.Reader) (Codec, error) {
 	case codec == TextCodecId:
 		return NewBufioCodec(filename, reader), nil
 
-	// TODO could we benefit from a CSV codec?
+	case codec == ClobCodecId:
+		return NewClobCodec(filename, reader), nil
+
+	case codec == BlobCodecId:
+		return NewBlobCodec(filename, reader), nil
 
 	default:
 		msg := fmt.Sprintf("No such codec: %q", codec)
@@ -73,5 +79,11 @@ func IsValidCodec(codec string) bool {
 
 func ValidCodecs() []string {
 	// generate on the fly so caller can't destructively mutate
-	return []string{JsonArrayCodecId, JsonStreamcodecId, TextCodecId}
+	return []string{
+		JsonArrayCodecId,
+		JsonStreamcodecId,
+		TextCodecId,
+		ClobCodecId,
+		BlobCodecId,
+	}
 }
