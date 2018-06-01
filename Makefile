@@ -12,7 +12,7 @@ GOBUILD_FLAGS=-i -ldflags "-X $(BEAT_PATH)/vendor/github.com/elastic/beats/libbe
 GOX_OS=linux darwin windows ## @Building List of all OS to be supported by "make crosscompile".
 GOX_FLAGS=-arch="arm64 amd64"
 EXES=gcsbeat-darwin-amd64 gcsbeat-linux-amd64 gcsbeat-linux-arm64 gcsbeat-windows-amd64.exe
-RELEASE_TMEPLATE_DIR=${BUILD_DIR}/releases/template
+RELEASE_TEMPLATE_DIR=${BUILD_DIR}/releases/template
 
 # Path to the libbeat Makefile
 -include $(ES_BEATS)/libbeat/scripts/Makefile
@@ -49,16 +49,17 @@ $(EXES): crosscompile release-template
 	@echo "Generating release: " $@
 	
 	mkdir -p ${BUILD_DIR}/releases/$@
-	cp -r ${RELEASE_TMEPLATE_DIR}/. ${BUILD_DIR}/releases/$@
+	cp -r ${RELEASE_TEMPLATE_DIR}/. ${BUILD_DIR}/releases/$@
 	cp ${BUILD_DIR}/bin/$@ ${BUILD_DIR}/releases/$@/${BEAT_NAME}$(suffix $@)
 	
 	tar -zcvf ${BUILD_DIR}/releases/$@.tar.gz -C ${BUILD_DIR}/releases $@
 
 .PHONY: release-template
 release-template: update
-	mkdir -p ${RELEASE_TMEPLATE_DIR}
+	mkdir -p ${RELEASE_TEMPLATE_DIR}
 	
-	cp -t ${RELEASE_TMEPLATE_DIR} ${BEAT_NAME}.yml ${BEAT_NAME}.reference.yml 
-	cp -t ${RELEASE_TMEPLATE_DIR} README.md NOTICE LICENSE fields.yml
-	cp -r _meta/kibana ${RELEASE_TMEPLATE_DIR}/dashboards
+	cp {${BEAT_NAME}.yml,${BEAT_NAME}.reference.yml} ${RELEASE_TEMPLATE_DIR}
+	cp {README.md,NOTICE,LICENSE,fields.yml} ${RELEASE_TEMPLATE_DIR}
+
+	cp -r _meta/kibana ${RELEASE_TEMPLATE_DIR}/dashboards
 
