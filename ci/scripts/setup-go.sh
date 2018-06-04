@@ -8,14 +8,13 @@ set -e -x
 echo "pwd: " $PWD
 ls -lah
 
-export GOPATH=$PWD
+#export GOPATH=$PWD
 
 echo "Environment Variables"
 env
 
-mkdir -p $GODIR
-cp -R ./$PROGNAME/* src/$GODIR
-
+mkdir -p /go/github.com/GoogleCloudPlatform
+ln -s $PWD/$PROGNAME /go/src/github.com/GoogleCloudPlatform/gcsbeat
 
 cd $GODIR
 echo "Gopath is: " $GOPATH
