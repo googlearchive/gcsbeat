@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		make \
 		pkg-config \
 	        python \
-                python-virtualenv
+                virtualenv
 
 ENV GOLANG_VERSION 1.10.2
 
