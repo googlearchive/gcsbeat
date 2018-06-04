@@ -5,6 +5,12 @@ jobs:
       trigger: true
     - task: test
       file: gcsbeat/ci/tasks/unit-test.yml
+  - name: build
+    plan:
+    - get: gcsbeat
+      passed: [test]
+    - task: build
+      file: gcsbeat/ci/tasks/build.yml
     
 
 resources:

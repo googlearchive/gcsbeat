@@ -6,8 +6,8 @@ go test -cover ./... > test_coverage.txt
 mkdir coverage-results
 mv test_coverage.txt coverage-results/
 
-echo "Checking for style guidelines"
-make check
+#echo "Checking for style guidelines"
+#make check
 
-echo "Testsuite"
-make testsuite
+#echo "Testsuite"
+#make testsuite

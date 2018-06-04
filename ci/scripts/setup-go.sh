@@ -21,5 +21,5 @@ echo "Gopath is: " $GOPATH
 echo "pwd is: " $PWD
 ls -lah
 
-echo Installing Virtualenv
-apt-get install virtualenv
+#echo Installing Virtualenv
+#apt-get install virtualenv
