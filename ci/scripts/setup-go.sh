@@ -13,7 +13,7 @@ ls -lah
 echo "Environment Variables"
 env
 
-mkdir -p /go/github.com/GoogleCloudPlatform
+mkdir -p /go/src/github.com/GoogleCloudPlatform
 ln -s $PWD/$PROGNAME /go/src/github.com/GoogleCloudPlatform/gcsbeat
 
 cd $GODIR
