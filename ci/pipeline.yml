@@ -9,8 +9,16 @@ jobs:
     plan:
     - get: gcsbeat
       passed: [test]
+      trigger: true
     - task: build
       file: gcsbeat/ci/tasks/build.yml
+  - name: release
+    plan:
+    - get: gcsbeat
+      passed: [build, test]
+      trigger: true
+    - task: release
+      file: gcsbeat/ci/tasks/release.yml
     
 
 resources:
