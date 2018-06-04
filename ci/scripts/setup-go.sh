@@ -16,7 +16,7 @@ env
 mkdir -p /go/src/github.com/GoogleCloudPlatform
 ln -s $PWD/$PROGNAME /go/src/github.com/GoogleCloudPlatform/gcsbeat
 
-cd /go/src/github.com/GoogleCloudPlatform
+cd /go/src/github.com/GoogleCloudPlatform/gcsbeat
 echo "Gopath is: " $GOPATH
 echo "pwd is: " $PWD
 ls -lah
