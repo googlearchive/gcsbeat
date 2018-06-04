@@ -12,10 +12,17 @@ jobs:
       trigger: true
     - task: build
       file: gcsbeat/ci/tasks/build.yml
+ - name: build-latest
+   plan:
+   - get: gcsbeat
+     passed: [test]
+     trigger: true
+   - task: build
+     file: gcsbeat/ci/tasks/build-latest.yml
   - name: release
     plan:
     - get: gcsbeat
-      passed: [build, test]
+      passed: [build]
       trigger: true
     - task: release
       file: gcsbeat/ci/tasks/release.yml
