@@ -4,6 +4,7 @@
 source $(dirname $0)/setup-go.sh
 
 go test -cover ./... > test_coverage.txt
-mv test_coverage.txt $GOPATH/coverage-results/.
+mkdir coverage-results
+mv test_coverage.txt coverage-results/
 
 make ci
