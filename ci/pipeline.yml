@@ -1,15 +1,15 @@
 jobs:
-- name: test
-  plan:
-  - get: gcsbeat
-    trigger: true
-  - task: test
+  - name: test
+    plan:
+    - get: gcsbeat
+      trigger: true
+    - task: test
+      file: gcsbeat/ci/tasks/unit-test.yml
     
 
 resources:
-
-- gcsbeat
-  type: git
-  source:
-    uri: https://github.com/josephlewis42/gcsbeat
-    branch: master
+  - name: gcsbeat
+    type: git
+    source:
+      uri: https://github.com/josephlewis42/gcsbeat
+      branch: master
