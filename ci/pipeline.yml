@@ -12,13 +12,13 @@ jobs:
       trigger: true
     - task: build
       file: gcsbeat/ci/tasks/build.yml
- - name: build-latest
-   plan:
-   - get: gcsbeat
-     passed: [test]
-     trigger: true
-   - task: build
-     file: gcsbeat/ci/tasks/build-latest.yml
+  - name: build-latest
+    plan:
+    - get: gcsbeat
+      passed: [test]
+      trigger: true
+    - task: build
+      file: gcsbeat/ci/tasks/build-latest.yml
   - name: release
     plan:
     - get: gcsbeat
@@ -26,7 +26,22 @@ jobs:
       trigger: true
     - task: release
       file: gcsbeat/ci/tasks/release.yml
-    
+  - name: build-ci-image
+    plan:
+    - put: gcsbeat-ci-image
+      params:
+        build: gcsbeat/ci/images/go-110
+#  - name: build-custom-image
+#    plan:
+#    - get: gcsbeat-ci-image
+#      passed:
+#      - build-ci-image
+#    - get: gcsbeat
+#      passed:
+#      - build-ci-image
+#    - task: build-custom-image
+#      image: gcsbeat-ci-image
+#      file: gcsbeat/ci/tasks/build-ci.yml
 
 resources:
   - name: gcsbeat
