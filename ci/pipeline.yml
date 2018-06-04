@@ -26,22 +26,6 @@ jobs:
       trigger: true
     - task: release
       file: gcsbeat/ci/tasks/release.yml
-  - name: build-ci-image
-    plan:
-    - put: gcsbeat-ci-image
-      params:
-        build: gcsbeat/ci/images/go-110
-#  - name: build-custom-image
-#    plan:
-#    - get: gcsbeat-ci-image
-#      passed:
-#      - build-ci-image
-#    - get: gcsbeat
-#      passed:
-#      - build-ci-image
-#    - task: build-custom-image
-#      image: gcsbeat-ci-image
-#      file: gcsbeat/ci/tasks/build-ci.yml
 
 resources:
   - name: gcsbeat
@@ -49,3 +33,4 @@ resources:
     source:
       uri: https://github.com/josephlewis42/gcsbeat
       branch: master
+
