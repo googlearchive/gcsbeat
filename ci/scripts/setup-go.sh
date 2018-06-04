@@ -22,4 +22,4 @@ echo "pwd is: " $PWD
 ls -lah
 
 echo Installing Virtualenv
-apt-get install python-virtualenv
+apt-get install virtualenv
