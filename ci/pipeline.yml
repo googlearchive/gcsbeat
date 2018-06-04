@@ -1,0 +1,15 @@
+jobs:
+- name: test
+  plan:
+  - get: gcsbeat
+    trigger: true
+  - task: test
+    
+
+resources:
+
+- gcsbeat
+  type: git
+  source:
+    uri: https://github.com/josephlewis42/gcsbeat
+    branch: master
