@@ -12,3 +12,6 @@ inputs:
 run:
   path: ./gcsbeat/ci/scripts/build.sh
 
+params:
+  PARAMONE: helloworld
+  PROJECT_ID: ((project-id))
