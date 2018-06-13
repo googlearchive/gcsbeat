@@ -5,6 +5,8 @@ jobs:
       trigger: true
     - task: test
       file: gcsbeat/ci/tasks/unit-test.yml
+    - task: integration-test
+      file: gcsbeat/ci/tasks/integration-test.yml
   - name: build
     plan:
     - get: gcsbeat
