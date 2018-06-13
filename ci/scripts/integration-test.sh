@@ -17,15 +17,15 @@ section "Checking config"
 require "$SERVICE_ACCOUNT" "SERVICE_ACCOUNT" "the service account JSON gcsbeat will use"
 require "$BUCKET" "BUCKET" "the bucket name to hold the test files"
 
+section "Building gcsbeat"
+source $(dirname $0)/setup-go.sh
+make
+
 section "Pulling down gcloud"
 curl https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-204.0.0-linux-x86_64.tar.gz > gcloud.tar.gz
 tar xfz gcloud.tar.gz
 
 ./google-cloud-sdk/bin/gcloud version
-
-section "Building gcsbeat"
-source $(dirname $0)/setup-go.sh
-make
 
 section "Setting up environment"
 export TESTID=`date +%s`
