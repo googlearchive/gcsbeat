@@ -28,7 +28,7 @@ source $(dirname $0)/setup-go.sh
 make
 
 section "Setting up environment"
-export TESTID=`uuidgen`
+export TESTID=`date +%s`
 export TESTDIR="/tmp/$TESTID"
 export KEYPATH="$TESTDIR/key.json"
 
