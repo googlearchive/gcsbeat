@@ -51,7 +51,8 @@ echo -e "000) Raw Text\n001) Gzipped Text" > "$TESTDIR/expected.txt"
 
 
 section "Running gcsbeat"
-timeout 30s ./gcsbeat -e -v -c ci/fixtures/integration-test-config.yml
+./gcsbeat -e -v -c ci/fixtures/integration-test-config.yml &
+sleep 30
 
 section "Checking Results"
 cat "$TESTDIR/actual.txt" | sort > "$TESTDIR/actual-sorted.txt"
