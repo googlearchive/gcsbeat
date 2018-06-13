@@ -1,3 +1,4 @@
+#!/bin/bash
 # Check environment
 
 require() {
