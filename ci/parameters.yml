@@ -1,8 +1,7 @@
 build-interval: 24h
-go-docker-version: 1.10.2
 
-
-# Integration Test Details
-
-test-gcp-bucket-id: gcsbeat-integration-test
-service-account-json-key: ((service-account-credentials-json))
+# You will need the following secrets stored in credhub:
+# test-gcp-bucket-id - the name of the GCP bucket to run integrations with
+# service-account-credentials-json - the full JSON of the service account
+# to run tests with, it should have permissions to read, create and delete
+# objects in the bucket.

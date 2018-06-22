@@ -14,4 +14,4 @@ run:
 
 params:
   BUCKET: ((test-gcp-bucket-id))
-  SERVICE_ACCOUNT: ((service-account-json-key))
+  SERVICE_ACCOUNT: ((service-account-credentials-json))
