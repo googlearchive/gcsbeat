@@ -5,3 +5,6 @@ build-interval: 24h
 # service-account-credentials-json - the full JSON of the service account
 # to run tests with, it should have permissions to read, create and delete
 # objects in the bucket.
+
+# Integration Test Configuration
+

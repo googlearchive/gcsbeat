@@ -13,5 +13,5 @@ run:
   path: ./gcsbeat/ci/scripts/integration-test.sh
 
 params:
-  BUCKET: ((test-gcp-bucket-id))
-  SERVICE_ACCOUNT: ((service-account-credentials-json))
+  BUCKET:
+  SERVICE_ACCOUNT:
