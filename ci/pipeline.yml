@@ -3,6 +3,8 @@ jobs:
     plan:
     - get: gcsbeat
       trigger: true
+    - get: build-timer
+      trigger: true
     - task: test
       file: gcsbeat/ci/tasks/unit-test.yml
     - task: integration-test
@@ -35,4 +37,7 @@ resources:
     source:
       uri: https://github.com/josephlewis42/gcsbeat
       branch: master
-
+  - name: build-timer
+    type: time
+    source:
+      interval: ((build-interval))

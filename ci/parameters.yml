@@ -1,0 +1,8 @@
+build-interval: 24h
+go-docker-version: 1.10.2
+
+
+# Integration Test Details
+
+test-gcp-bucket-id: gcsbeat-integration-test
+service-account-json-key: ((service-account-credentials-json))

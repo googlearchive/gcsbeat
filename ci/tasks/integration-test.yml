@@ -4,7 +4,7 @@ image_resource:
   type: docker-image
   source:
     repository: golang
-    tag: 1.10.2
+    tag: ((go-docker-version))
 
 inputs:
 - name: gcsbeat
@@ -13,5 +13,5 @@ run:
   path: ./gcsbeat/ci/scripts/integration-test.sh
 
 params:
-  BUCKET: gcsbeat-integration-test
-  SERVICE_ACCOUNT: ((service-account-credentials-json))
+  BUCKET: ((test-gcp-bucket-id))
+  SERVICE_ACCOUNT: ((service-account-json-key))

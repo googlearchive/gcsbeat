@@ -9,9 +9,6 @@ image_resource:
 inputs:
 - name: gcsbeat
 
-outputs:
-- name: releases
-
 run:
   path: ./gcsbeat/ci/scripts/release.sh
 

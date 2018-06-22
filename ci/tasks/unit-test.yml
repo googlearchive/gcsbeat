@@ -4,13 +4,10 @@ image_resource:
   type: docker-image
   source:
     repository: golang
-    tag: 1.10.2
+    tag: ((go-docker-version))
 
 inputs:
 - name: gcsbeat
-
-outputs:
-- name: coverage-results
 
 run:
   path: ./gcsbeat/ci/scripts/unit-tests.sh

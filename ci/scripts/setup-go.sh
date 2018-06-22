@@ -8,8 +8,6 @@ set -e -x
 echo "pwd: " $PWD
 ls -lah
 
-#export GOPATH=$PWD
-
 echo "Environment Variables"
 env
 
@@ -21,5 +19,3 @@ echo "Gopath is: " $GOPATH
 echo "pwd is: " $PWD
 ls -lah
 
-#echo Installing Virtualenv
-#apt-get install virtualenv
