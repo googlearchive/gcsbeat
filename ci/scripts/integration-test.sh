@@ -12,16 +12,19 @@ section() {
 	echo -e "\n============================\n= $1\n============================\n"
 }
 
+SCRIPTDIR=$(dirname $0)
+SCRIPTDIR=$(realpath $SCRIPTDIR)
+
 section "Checking config"
 require "$SERVICE_ACCOUNT" "SERVICE_ACCOUNT" "the service account JSON gcsbeat will use"
 require "$BUCKET" "BUCKET" "the bucket name to hold the test files"
 
 section "Building gcsbeat"
-source $(dirname $0)/setup-go.sh
+source $SCRIPTDIR/setup-go.sh
 make
 
 section "Pulling down gcloud"
-source $(dirname $0)/setup-gcloud.sh
+source $SCRIPTDIR/setup-gcloud.sh
 
 section "Setting up environment"
 export TESTID=`date +%s`
