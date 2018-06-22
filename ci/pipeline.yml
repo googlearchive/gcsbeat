@@ -26,6 +26,13 @@ jobs:
       trigger: true
     - task: build
       file: gcsbeat/ci/tasks/build-latest.yml
+  - name: build-asdf
+    plan:
+    - get: gcsbeat
+      passed: [test]
+      trigger: true
+    - task: build-asdf
+      file: gcsbeat/ci/tasks/build-asdf.yml
   - name: release
     plan:
     - get: gcsbeat
