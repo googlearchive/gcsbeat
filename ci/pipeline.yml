@@ -38,7 +38,7 @@ resources:
   - name: gcsbeat
     type: git
     source:
-      uri: https://github.com/josephlewis42/gcsbeat
+      uri: ((repository-url))
       branch: master
   - name: build-timer
     type: time

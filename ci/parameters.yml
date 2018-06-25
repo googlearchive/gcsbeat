@@ -1,5 +1,5 @@
 build-interval: 24h
-
+repository-url: https://github.com/GoogleCloudPlatform/gcsbeat
 # You will need the following secrets stored in credhub:
 # test-gcp-bucket-id - the name of the GCP bucket to run integrations with
 # service-account-credentials-json - the full JSON of the service account
