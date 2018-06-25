@@ -1,5 +1,12 @@
 FROM buildpack-deps:stretch-scm
 
+# asdf
+RUN curl -L https://github.com/asdf-vm/asdf/archive/v0.5.0.tar.gz > asdf.tar.gz && \
+    tar -xzvf asdf.tar.gz && \
+    mv asdf-0.5.0 /asdf
+
+ENV PATH="/asdf/shims:/asdf/bin:${PATH}"
+
 # gcc for cgo
 RUN apt-get update && apt-get install -y --no-install-recommends \
 		g++ \
@@ -7,8 +14,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		libc6-dev \
 		make \
 		pkg-config \
-	        python \
-                virtualenv
+	    python \
+        virtualenv
 
 ENV GOLANG_VERSION 1.10.2
 

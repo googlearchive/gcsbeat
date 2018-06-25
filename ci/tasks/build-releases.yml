@@ -10,5 +10,5 @@ inputs:
 - name: gcsbeat
 
 run:
-  path: ./gcsbeat/ci/scripts/release.sh
+  path: ./gcsbeat/ci/scripts/build-releases.sh
 
