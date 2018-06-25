@@ -1,13 +1,13 @@
-#!/bin/sh
+#!/bin/bash
 
 # Pull down ASDF
 
 ASDFPATH=$(which asdf)
 if [ "$ASDFPATH" = "" ] 
 then
-	echo "Installing CURL"
-	apk update
-	apk add curl
+	#echo "Installing CURL"
+	#apk update
+	#apk add curl
 
 	echo "Downloading asdf"
 	curl -L https://github.com/asdf-vm/asdf/archive/v0.5.0.tar.gz > asdf.tar.gz
