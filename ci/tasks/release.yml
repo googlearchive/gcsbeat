@@ -4,7 +4,7 @@ image_resource:
   type: docker-image
   source:
     repository: josephlewis42/gcsbeat-build
-    tag: 1.1.0
+    tag: 1.2.0
 
 inputs:
 - name: gcsbeat
