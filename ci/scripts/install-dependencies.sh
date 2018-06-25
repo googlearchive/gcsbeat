@@ -6,8 +6,9 @@ ASDFPATH=$(which asdf)
 if [ "$ASDFPATH" = "" ] 
 then
 	echo "Installing CURL"
-	apt-get install curl
-	
+	apk update
+	apk add curl
+
 	echo "Downloading asdf"
 	curl -L https://github.com/asdf-vm/asdf/archive/v0.5.0.tar.gz > asdf.tar.gz
 	tar -xzvf asdf.tar.gz
