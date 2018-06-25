@@ -10,8 +10,8 @@ jobs:
     - task: integration-test
       file: gcsbeat/ci/tasks/integration-test.yml
       params:
-        BUCKET: ((test-gcp-bucket-id))
-        SERVICE_ACCOUNT: ((service-account-credentials-json))
+        BUCKET: ((integration-test-bucket-id))
+        SERVICE_ACCOUNT: ((service-account-json))
   - name: build
     plan:
     - get: gcsbeat

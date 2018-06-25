@@ -7,4 +7,5 @@ build-interval: 24h
 # objects in the bucket.
 
 # Integration Test Configuration
-
+integration-test-bucket-id: ((test-gcp-bucket-id))
+service-account-json: ((service-account-credentials-json))
