@@ -1,0 +1,46 @@
+jobs:
+  - name: test
+    plan:
+    - get: gcsbeat
+      trigger: true
+    - get: build-timer
+      trigger: true
+    - task: test
+      file: gcsbeat/ci/tasks/unit-test.yml
+    - task: integration-test
+      file: gcsbeat/ci/tasks/integration-test.yml
+      params:
+        BUCKET: ((integration-test-bucket-id))
+        SERVICE_ACCOUNT: ((service-account-json))
+  - name: build
+    plan:
+    - get: gcsbeat
+      passed: [test]
+      trigger: true
+    - task: build
+      file: gcsbeat/ci/tasks/build.yml
+  - name: build-latest
+    plan:
+    - get: gcsbeat
+      passed: [test]
+      trigger: true
+    - task: build
+      file: gcsbeat/ci/tasks/build-latest.yml
+  - name: build-releases
+    plan:
+    - get: gcsbeat
+      passed: [test]
+      trigger: true
+    - task: build-releases
+      file: gcsbeat/ci/tasks/build-releases.yml
+
+resources:
+  - name: gcsbeat
+    type: git
+    source:
+      uri: ((repository-url))
+      branch: master
+  - name: build-timer
+    type: time
+    source:
+      interval: ((build-interval))

@@ -1,0 +1,17 @@
+gcsbeat:
+  interval: 5s
+  bucket_id: ${BUCKET}
+  json_key_file: ${KEYPATH}
+  delete: false
+  file_matches: "${TESTID}/*"
+  file_exclude: "bak_*"
+  metadata_key: x-goog-meta-gcsbeat
+  codec: "text"
+  unpack_gzip: true
+  processed_db_path: "processed_file_list.db"
+
+output.file:
+  path: "/tmp/${TESTID}"
+  filename: "actual.txt"
+  codec.format:
+    string: '%{[event]}'
