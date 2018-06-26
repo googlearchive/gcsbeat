@@ -3,18 +3,10 @@
 PROGNAME=gcsbeat
 GODIR=github.com/GoogleCloudPlatform/gcsbeat
 
-set -e -x
+mkdir -p $GOPATH/src/github.com/GoogleCloudPlatform
+ln -s $PWD/$PROGNAME $GOPATH/src/$GODIR
 
-echo "pwd: " $PWD
-ls -lah
-
-echo "Environment Variables"
-env
-
-mkdir -p /go/src/github.com/GoogleCloudPlatform
-ln -s $PWD/$PROGNAME /go/src/github.com/GoogleCloudPlatform/gcsbeat
-
-cd /go/src/github.com/GoogleCloudPlatform/gcsbeat
+cd $GOPATH/src/$GODIR
 echo "Gopath is: " $GOPATH
 echo "pwd is: " $PWD
 ls -lah
