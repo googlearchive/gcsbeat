@@ -35,9 +35,6 @@ mkdir -p $TESTDIR
 
 echo "Test ID: $TESTID"
 echo $SERVICE_ACCOUNT > $KEYPATH
-ls -la $TESTDIR
-gcloud auth activate-service-account --key-file $KEYPATH
-
 
 section "Setting up test files"
 
