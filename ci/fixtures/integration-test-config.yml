@@ -1,72 +1,17 @@
-################### Gcpstoragebeat Configuration Example #########################
-
-############################# Gcpstoragebeat ######################################
-
 gcsbeat:
-  # The number of seconds between looking for new files in your bucket.
   interval: 5s
-
-  # The bucket containing your log files. If the `bucket_id` begins with file:// then the directory
-  # pointed to will be used instead. This can be useful for testing your glob logic before
-  # going live.
   bucket_id: ${BUCKET}
-
-  # The path to the key to authenticate your user to the bucket.
-  # this service user _should_ have the `storage.objects.update`
-  # permission so it can create metadata on the object preventing
-  # it from being scanned multiple times.
   json_key_file: ${KEYPATH}
-
-  # Should the log file be deleted after its contents have been updated?
   delete: false
-
-  # A glob pattern to filter files. Only files with names matching this will be considered.
   file_matches: "${TESTID}/*"
-
-  # Any files matching this glob are excluded from processing.
   file_exclude: "bak_*"
-
-  # This key will be set on the objects after they've been processed by the beat. That way you can
-  # stop the beat and not upload files again or prevent them from being uploaded by setting the
-  # field manually.
-  #
-  # NOTE the key is a flag, if a file was partially processed some events will be resent.
   metadata_key: x-goog-meta-gcsbeat
-
-  # Codec describes how the values in the matched files will be parsed.
-  #
-  # Possible values
-  #
-  # * `text` A newline delimited file. Sends one event per line including the file name and line
-  #   number.
-  # * `json-array` A JSON array containing maps e.g. "[{...}, ...]" Sends one event per map.
-  #   Parsed values are added to the log event.
-  # * `json-stream` A file of concatenated JSON maps e.g. "{...}{...}..." Sends one event per map.
-  #   Parsed values are added to the log event.
-  # * `clob` The full contents of a UTF-8 text file. Sends one event per file.
-  # * `blob` The full contents of a file encoded in Base64.
   codec: "text"
-
-  # If set to true, files ending in .gz are decompressed before they're parsed by the codec.
-  # The file will be skipped if it has the suffix, but can't be opened as a gzip
-  # for example, if it has a bad magic number.
   unpack_gzip: true
-
-  # If set, the beat WILL NOT modify attributes on the files in the bucket. Instead it will store
-  # the list of processed files locally in this Bolt database.
-  # The database does take the metadata_key into account, changing the key will mean all the files
-  # will be re-processed.
-  #
-  # Caveat, the database works by storing filename/metadata_key pairs. If files are modified
-  # remotely (deleted and re-written) the changes will not be picked up.
   processed_db_path: "processed_file_list.db"
-
-#output.console:
-#  pretty: true
 
 output.file:
   path: "/tmp/${TESTID}"
   filename: "actual.txt"
   codec.format:
     string: '%{[event]}'
-
