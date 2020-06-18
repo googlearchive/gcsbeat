@@ -1,6 +1,6 @@
-[![Build Status](https://travis-ci.org/GoogleCloudPlatform/gcsbeat.svg?branch=master)](https://travis-ci.org/GoogleCloudPlatform/gcsbeat) [![Go Report Card](https://goreportcard.com/badge/github.com/GoogleCloudPlatform/gcsbeat)](https://goreportcard.com/report/github.com/GoogleCloudPlatform/gcsbeat) [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+# Status: Archived
 
-
+This project is no longer actively maintained by Google.
 
 # GCSBeat
 
