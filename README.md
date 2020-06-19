@@ -1,6 +1,6 @@
 # Status: Archived
 
-This project is no longer actively maintained by Google.
+This project is no longer actively maintained by Google. For assistance, please reach out to the [Google Open Source Programs Office](mailto:gcp-ospo@googlegroups.com).
 
 # GCSBeat
 
